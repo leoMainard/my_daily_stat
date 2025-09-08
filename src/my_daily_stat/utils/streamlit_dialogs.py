@@ -13,10 +13,13 @@ def add_stat():
             options = ("Text", "Checkbox","Feedback","Multiselect", "Number input", "Time_input")
         )
 
+        multiselect_options = []
         if type == "Multiselect":
-            multiselect_options = st.multiselect("Add options", options = ("Example : Football"), accept_new_options=True)
-        else:
-            multiselect_options = []
+            multiselect_options = st.multiselect(
+                "Add options", 
+                options = ("Example : Football"), 
+                accept_new_options=True
+            )
 
         btn_save_add_stat = st.button(
             label = "Save",
@@ -42,6 +45,17 @@ def add_stat():
                     "type" : type,
                     "multiselect_option" : multiselect_options
                 })
-                return True
+                st.success(
+                    body="Your stat was saved!", 
+                    icon="🔥"
+                )
+                st.rerun()
     except Exception as e:
-        return False
+        st.error(
+            body="An erreur has occured! {}".format(e), 
+            icon="🚨"
+        )
+
+@st.dialog("Daily stat")
+def display_stat():
+    pass
