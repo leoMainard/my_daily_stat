@@ -3,14 +3,15 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "my_project"
+name = "my_daily_stat"
 version = "0.1.0"
-description = "Description de mon projet Python"
-authors = [{ name="Ton Nom", email="ton@email.com" }]
+description = "Application Streamlit pour la prise de note de statistiques quotidiennes."
+authors = [{ name="Léo Mainard", email="leomainard63@email.com" }]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 dependencies = [
-    "pytest>=8.4.0"
+    "pytest>=8.4.0",
+    "streamlit>=1.49.1",
 ]
 
 [tool.setuptools]
@@ -18,3 +19,6 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.uv]
+dev-dependencies = ["pytest>=8.4.0"]

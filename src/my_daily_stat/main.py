@@ -1,6 +1,7 @@
 
 
-from my_project.config import Environnement, ExempleEnum
+from my_daily_stat.config import Environnement, ExempleEnum
+
 def somme(a, b):
     """Returns the sum of two numbers."""
     return a + b
