@@ -14,15 +14,15 @@ source .venv/bin/activate  # sous Windows : .venv\Scripts\activate
 pip install -e .
 ```
 
-```
-columns = st.columns(10)
+**TODO**
+- Créer 3 tables 
+    - User(user_id, name, tags, ?)
+    - Stat_ref(red_id, user_id, stat_id, type, ?)
+    - Stats(stat_id, date, text, checkbox, feedback, multiselect, number_input, time_input)
 
-icons = ["🍎", "🍌", "🍇", "🍓", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝"]
+- Option de modification d'une stat
+    - si changement de type, alors message warning perte d'historique des données (à préciser)
 
-selected_icons = []
-
-for index, column in enumerate(columns):
-    with column:
-        if button(icons[index], key=f"button_{index}"):
-            selected_icons.append(icons[index])
-```
+- Ajouter une liste de tags à sélectionner sur les dialogs stat
+- Ajouter la sélection d'icon sur dialogs stat
+- dashboard
