@@ -80,7 +80,6 @@ def display_stat(stats_infos: dict):
 
         elif stats_infos["type"] == "Feedback":
             user_input = st.feedback(
-                label = f"How was your {stats_infos['name']} today ?",
                 options = "faces"
             )
 
