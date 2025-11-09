@@ -8,6 +8,11 @@ def add_stat():
             placeholder = "Example : Sport"
         )
 
+        description = st.text_area(
+            label = "Description",
+            placeholder = "Example : Track my daily sport activity"
+        )
+
         type = st.selectbox(
             label = "Type",
             options = ("Text", "Checkbox","Feedback","Multiselect", "Number input", "Time_input")
@@ -43,6 +48,7 @@ def add_stat():
                 st.session_state.stat.append({
                     "name" : stat_name,
                     "type" : type,
+                    "description": description,
                     "multiselect_option" : multiselect_options
                 })
                 st.success(
@@ -61,11 +67,7 @@ def display_stat(stats_infos: dict):
     try:
         st.write(f"## {stats_infos['name']}")
 
-        st.date_input(
-            label = "Date",
-            value = "today",
-            key = "selected_date"
-        )
+        st.badge(stats_infos.get("description", ""), icon=":material/lightbulb_2:" ,color="blue")
 
         if stats_infos["type"] == "Text":
             user_input = st.text_input(

@@ -15,9 +15,10 @@ pip install -e .
 ```
 
 **TODO**
+- Créer une page de connexion utilisateur, avec la création d'un utilisateur
 - Créer 3 tables 
     - User(user_id, name, tags, ?)
-    - Stat_ref(red_id, user_id, stat_id, type, ?)
+    - Stat_ref(ref_id, user_id, stat_id, type, ?)
     - Stats(stat_id, date, text, checkbox, feedback, multiselect, number_input, time_input)
 
 - Option de modification d'une stat
