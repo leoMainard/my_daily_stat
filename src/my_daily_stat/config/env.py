@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 
 class Environnement:
     _configuration = None
@@ -8,7 +7,11 @@ class Environnement:
     def _load_config(cls):
         if cls._configuration is None:
             cls._configuration = {
-                "ENV_VAR_EXEMPLE": os.getenv("ENV_VAR_EXEMPLE"),
+                "DB_NAME": os.getenv("DB_NAME"),
+                "DB_HOSTNAME": os.getenv("DB_HOSTNAME"),
+                "DB_PORT": os.getenv("DB_PORT"),
+                "DB_USER": os.getenv("DB_USER"),
+                "DB_PASSWORD": os.getenv("DB_PASSWORD"),
             }
 
     @classmethod
@@ -18,9 +21,3 @@ class Environnement:
             return cls._configuration[name]
         except KeyError:
             raise KeyError(f"Configuration '{name}' not found.")
-
-
-class ExempleEnum(Enum):
-
-    VALUE1 = "value1"
-    VALUE2 = "value2"
