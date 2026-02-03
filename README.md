@@ -28,10 +28,10 @@ Nouvelle structure à mettre en place :
 src/
    db/
       base.py ✅         # Interface abstraite
-      models.py
+      models.py ✅
       adapters/
          postgres.py ✅
-         sqlite.py     # Pour les tests
+         sqlite.py     # Pour les tests : creer le code et demander à alembic de générer les tables
       repositories/    # ← IMPORTANT : couche métier/données
          user_repository.py ✅
          ...

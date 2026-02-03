@@ -12,6 +12,14 @@ class Settings(BaseSettings):
     APP_NAME: str = "Mon App Streamlit"
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
+
+    @property
+    def database_url(self) -> str:
+        """URL de connexion pour SQLAlchemy/Alembic"""
+        return (
+            f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
     
     class Config:
         env_file = ".env"

@@ -8,5 +8,6 @@ class Stat():
         self.tags = tags
         self.description = description
         self.creation_date = None
+        self.update_date = None
 
     # TODO

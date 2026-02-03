@@ -5,6 +5,6 @@ class StatValue():
         self.stat_value_id = None
         self.stat_id = None
         self.data = data
-        self.update_date = None
+        self.recorded_at = None
 
     # TODO
