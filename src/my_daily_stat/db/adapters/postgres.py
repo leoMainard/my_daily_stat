@@ -45,24 +45,45 @@ class PostgresAdapter(DatabaseAdapter):
             raise
     
     def execute_query(self, query: str, params: Optional[Dict] = None) -> List[Dict[str, Any]]:
-        """SELECT queries"""
+        """SELECT queries
+        
+        Args:
+            query (str): La requête SQL à exécuter
+            params (Optional[Dict]): Les paramètres pour la requête
+            
+        Returns:
+            List[Dict[str, Any]]: Les résultats de la requête sous forme de liste de dicts
+            
+        Example:
+            results = db_adapter.execute_query("SELECT * FROM users WHERE id = %(id)s", {'id': 1})
+            
+            # Example with parameters:
+            results = db_adapter.execute_query("SELECT * FROM users WHERE email = %(email)s", {'email': 'user@example.com'})
+        """
         self.connect()
         with self._connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, params or {})
             return [dict(row) for row in cursor.fetchall()]
     
     def execute_command(self, command: str, params: Optional[Dict] = None) -> int:
-        """INSERT/UPDATE/DELETE"""
+        """INSERT/UPDATE/DELETE
+        
+        Args:
+            command (str): La commande SQL à exécuter
+            params (Optional[Dict]): Les paramètres pour la commande
+        Returns:
+            int: Le nombre de lignes affectées
+        """
         with self.transaction() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(command, params or {})
                 return cursor.rowcount
     
-    # Méthode utilitaire pour Streamlit (connection pooling)
-    @staticmethod
-    @st.cache_resource
-    def get_cached_connection():
-        """Connexion mise en cache pour Streamlit"""
-        adapter = PostgresAdapter()
-        adapter.connect()
-        return adapter
+# Méthode utilitaire pour Streamlit (connection pooling)
+@staticmethod
+@st.cache_resource
+def get_cached_connection():
+    """Connexion mise en cache pour Streamlit"""
+    adapter = PostgresAdapter()
+    adapter.connect()
+    return adapter

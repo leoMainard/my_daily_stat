@@ -26,8 +26,8 @@ class UserRepository(Repository[User]):
     
     def create(self, user: User) -> User:
         command = """
-            INSERT INTO users (name, email, role, created_at)
-            VALUES (%(name)s, %(email)s, %(role)s, %(created_at)s)
+            INSERT INTO users (firstname, lastname, email, password_hash, role, created_at)
+            VALUES (%(firstname)s, %(lastname)s, %(email)s, %(password_hash)s, %(role)s, %(created_at)s)
             RETURNING id
         """
         with self.db.transaction() as conn:
@@ -40,7 +40,7 @@ class UserRepository(Repository[User]):
     def update(self, user: User) -> User:
         command = """
             UPDATE users 
-            SET name = %(name)s, email = %(email)s, role = %(role)s
+            SET firstname = %(firstname)s, lastname = %(lastname)s, email = %(email)s, role = %(role)s, updated_at = NOW()
             WHERE id = %(id)s
         """
         rows = self.db.execute_command(command, user.to_dict())
@@ -49,6 +49,7 @@ class UserRepository(Repository[User]):
             raise UserNotFoundError(f"User {user.id} not found")
         
         return user
+    
     
     def delete(self, id: int) -> bool:
         command = "DELETE FROM users WHERE id = %(id)s"

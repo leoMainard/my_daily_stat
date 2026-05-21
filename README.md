@@ -31,8 +31,8 @@ src/
       models.py ✅
       adapters/
          postgres.py ✅
-         sqlite.py     # Pour les tests : creer le code et demander à alembic de générer les tables
-      repositories/    # ← IMPORTANT : couche métier/données
+         sqlite.py
+      repositories/
          user_repository.py ✅
          ...
    domain/
@@ -60,7 +60,7 @@ src/
 
 
 
-- Créer une page de connexion utilisateur, avec la création d'un utilisateur
+- Créer une page de connexion utilisateur, avec la création d'un utilisateur ✅
 
 - Option de modification d'une stat
     - si changement de type, alors message warning perte d'historique des données (à préciser)

@@ -3,7 +3,7 @@ from my_daily_stat.config.logger import logger
 from my_daily_stat.utils.streamlit_dialogs import add_stat, display_stat
        
 
-st.write("# Welcome to My Daily Stat! 👋")
+st.write("# Welcome to My Daily Stat!")
 
 # récupère toutes les stats
 stats = st.session_state.get("stat", [])

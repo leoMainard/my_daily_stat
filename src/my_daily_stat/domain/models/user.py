@@ -1,30 +1,35 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Dict, Any
+import bcrypt
 from my_daily_stat.config.enums import UserRole
 
 @dataclass
 class User:
     """Entité User - Représente un utilisateur dans le domaine métier"""
-    
+
     firstname: str
     lastname: str
     email: str
+    password_hash: str = ""
     role: UserRole = UserRole.USER
     id: Optional[int] = None
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: Optional[datetime] = None
     
     def __post_init__(self):
-        """Validation après initialisation"""
         if not self.email or '@' not in self.email:
             raise ValueError("Email invalide")
-        
         if not self.firstname or len(self.firstname) < 2:
             raise ValueError("Le prénom doit contenir au moins 2 caractères")
-        
         if not self.lastname or len(self.lastname) < 2:
             raise ValueError("Le nom doit contenir au moins 2 caractères")
+
+    def set_password(self, plain_password: str) -> None:
+        self.password_hash = bcrypt.hashpw(plain_password.encode(), bcrypt.gensalt()).decode()
+
+    def check_password(self, plain_password: str) -> bool:
+        return bcrypt.checkpw(plain_password.encode(), self.password_hash.encode())
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'User':
@@ -34,6 +39,7 @@ class User:
             firstname=data['firstname'],
             lastname=data['lastname'],
             email=data['email'],
+            password_hash=data.get('password_hash', ''),
             role=UserRole(data['role']),
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at')
@@ -43,8 +49,10 @@ class User:
         """Conversion vers dict pour la DB"""
         return {
             'id': self.id,
-            'name': self.name,
+            'firstname': self.firstname,
+            'lastname': self.lastname,
             'email': self.email,
+            'password_hash': self.password_hash,
             'role': self.role.value,
             'created_at': self.created_at,
             'updated_at': self.updated_at
