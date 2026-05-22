@@ -10,3 +10,9 @@ class DuplicateEmailError(DomainException):
 
 class ValidationError(DomainException):
     pass
+
+class UserAlreadyExistsError(DomainException):
+    pass
+
+class AuthenticationError(DomainException):
+    pass
