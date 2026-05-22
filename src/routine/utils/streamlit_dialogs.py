@@ -1,16 +1,16 @@
 import streamlit as st
 
-@st.dialog("New stat")
-def add_stat():
+@st.dialog("New routine")
+def add_routine():
     try:
-        stat_name = st.text_input(
-            label = "Stat name",
-            placeholder = "Example : Sport"
+        routine_name = st.text_input(
+            label = "Nom de la routine",
+            placeholder = "Exemple : Jogging du matin"
         )
 
         description = st.text_area(
             label = "Description",
-            placeholder = "Example : Track my daily sport activity"
+            placeholder = "Exemple : Suivre ma routine de jogging du matin pour rester en forme et améliorer ma santé cardiovasculaire."
         )
 
         type = st.selectbox(
@@ -26,14 +26,14 @@ def add_stat():
                 accept_new_options=True
             )
 
-        btn_save_add_stat = st.button(
+        btn_save_add_routine = st.button(
             label = "Save",
             type = "primary",
             icon = ":material/check:"
         )
 
-        if btn_save_add_stat:
-            if not stat_name:
+        if btn_save_add_routine:
+            if not routine_name:
                 st.warning('You have to add a name.', icon="⚠️")
 
             elif not type:
@@ -42,17 +42,17 @@ def add_stat():
             elif type == "Multiselect" and not multiselect_options:
                 st.warning('You have to add options.', icon="⚠️")
             else:
-                if "stat" not in st.session_state:
-                    st.session_state["stat"] = []
+                if "routines" not in st.session_state:
+                    st.session_state["routines"] = []
                 
-                st.session_state.stat.append({
-                    "name" : stat_name,
+                st.session_state.routines.append({
+                    "name" : routine_name,
                     "type" : type,
                     "description": description,
                     "multiselect_option" : multiselect_options
                 })
                 st.success(
-                    body="Your stat was saved!", 
+                    body="Votre routine a été ajoutée !", 
                     icon="🔥"
                 )
                 st.rerun()
@@ -62,44 +62,44 @@ def add_stat():
             icon="🚨"
         )
 
-@st.dialog("Daily stat")
-def display_stat(stats_infos: dict):
+@st.dialog("Daily routine")
+def display_routine(routines_infos: dict):
     try:
-        st.write(f"## {stats_infos['name']}")
+        st.write(f"## {routines_infos['name']}")
 
-        st.badge(stats_infos.get("description", ""), icon=":material/lightbulb_2:" ,color="blue")
+        st.badge(routines_infos.get("description", ""), icon=":material/lightbulb_2:" ,color="blue")
 
-        if stats_infos["type"] == "Text":
+        if routines_infos["type"] == "Text":
             user_input = st.text_input(
-                label = f"Your {stats_infos['name']}",
+                label = f"Your {routines_infos['name']}",
                 placeholder = f"Example : I did 30 minutes of sport"
             )
 
-        elif stats_infos["type"] == "Checkbox":
+        elif routines_infos["type"] == "Checkbox":
             user_input = st.checkbox(
-                label = f"Did you {stats_infos['name']} today ?"
+                label = f"Did you {routines_infos['name']} today ?"
             )
 
-        elif stats_infos["type"] == "Feedback":
+        elif routines_infos["type"] == "Feedback":
             user_input = st.feedback(
                 options = "faces"
             )
 
-        elif stats_infos["type"] == "Multiselect":
+        elif routines_infos["type"] == "Multiselect":
             user_input = st.multiselect(
-                label = f"Select your {stats_infos['name']} today",
-                options = stats_infos.get("multiselect_option", [])
+                label = f"Select your {routines_infos['name']} today",
+                options = routines_infos.get("multiselect_option", [])
             )
 
-        elif stats_infos["type"] == "Number input":
+        elif routines_infos["type"] == "Number input":
             user_input = st.number_input(
-                label = f"Your {stats_infos['name']}",
+                label = f"Your {routines_infos['name']}",
                 step=1
             )
 
-        elif stats_infos["type"] == "Time_input":
+        elif routines_infos["type"] == "Time_input":
             user_input = st.time_input(
-                label = f"Your {stats_infos['name']}",
+                label = f"Your {routines_infos['name']}",
             )
 
         btn_save_daily_stat = st.button(
@@ -113,8 +113,8 @@ def display_stat(stats_infos: dict):
                 st.session_state["daily_stats"] = []
             
             st.session_state.daily_stats.append({
-                "name" : stats_infos["name"],
-                "type" : stats_infos["type"],
+                "name" : routines_infos["name"],
+                "type" : routines_infos["type"],
                 "value" : user_input
             })
             st.success(

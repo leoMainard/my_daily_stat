@@ -1,13 +1,13 @@
 
-class Stat():
-    """ Classe représentant une statistique journalière."""
+class Routine():
+    """ Classe représentant une routine journalière."""
     def __init__(self, type: str, tags:list[str], description:str):
-        self.stat_id = None
+        self.routine_id = None
         self.user_id = None
         self.type = type
         self.tags = tags
         self.description = description
-        self.creation_date = None
-        self.update_date = None
+        self.created_at = None
+        self.updated_at = None
 
     # TODO

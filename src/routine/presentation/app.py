@@ -12,7 +12,7 @@ if "user" not in st.session_state:
 else:
     pages = [
         st.Page("pages/menu.py", title="Menu", icon=":material/home:"),
-        st.Page("pages/add_stats.py", title="Ajouter des routines", icon=":material/add_circle:"),
+        st.Page("pages/routine.py", title="Mes routines", icon=":material/add_circle:"),
         st.Page("pages/dashboard.py", title="Dashboard", icon=":material/dashboard:")
     ]
 

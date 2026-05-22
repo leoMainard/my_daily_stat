@@ -22,8 +22,8 @@ class UserModel(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=True, onupdate=func.now())
 
-class StatsModel(Base):
-    __tablename__ = 'stats'
+class RoutinesModel(Base):
+    __tablename__ = 'routines'
     
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
@@ -33,11 +33,11 @@ class StatsModel(Base):
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=True, onupdate=func.now())
 
-class StatValuesModel(Base):
-    __tablename__ = 'stat_values'
+class RoutineValuesModel(Base):
+    __tablename__ = 'routine_values'
     
     id = Column(Integer, primary_key=True)
-    stat_id = Column(Integer, ForeignKey('stats.id', ondelete='CASCADE'), nullable=False)
+    routine_id = Column(Integer, ForeignKey('routines.id', ondelete='CASCADE'), nullable=False)
     value = Column(JSONB, nullable=False)
     recorded_at = Column(DateTime, nullable=False, server_default=func.now())
 
