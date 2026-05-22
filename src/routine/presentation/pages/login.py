@@ -7,12 +7,12 @@ from routine.db.repositories.user_repository import UserRepository
 
 
 
-st.title("Login")
+st.title("Connexion")
 
 email = st.text_input("Email")
-password = st.text_input("Password", type="password")
+password = st.text_input("Mot de passe", type="password")
 
-if st.button("Login", type="primary", shortcut="Enter"):
+if st.button("Connexion", type="primary", shortcut="Enter"):
     if email and password:
         if '@' not in email:
             st.toast("Email invalide", icon=":material/warning:")
@@ -24,11 +24,11 @@ if st.button("Login", type="primary", shortcut="Enter"):
 
         if user and user.check_password(password):
             st.session_state.user = user.to_dict()  # Stockage de l'utilisateur dans la session
-            st.toast("Login successful! Welcome " + user.firstname + "!", icon=":material/check:")
-            with st.spinner("Redirecting to menu..."):
+            st.toast("Connexion réussie! Bienvenue " + user.firstname + "!", icon=":material/check:")
+            with st.spinner("Redirection vers le menu..."):
                 time.sleep(2)
                 st.switch_page("pages/menu.py")
         else:
-            st.toast("Invalid email or password", icon=":material/warning:")
+            st.toast("Email ou mot de passe invalide", icon=":material/warning:")
 
 

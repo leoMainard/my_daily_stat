@@ -7,17 +7,18 @@ from routine.db.adapters.postgres import get_cached_connection
 from routine.db.repositories.user_repository import UserRepository
 from routine.domain.models.user import User
 
-st.title("Create your account")
+st.title("Créer votre compte")
 
 left, right = st.columns(2)
-first_name = left.text_input("Firstname")
-last_name = right.text_input("Lastname")
+first_name = left.text_input("Prénom")
+last_name = right.text_input("Nom")
+
 
 email = st.text_input("Email")
-password = st.text_input("Password", type="password")
-password_confirm = st.text_input("Confirm Password", type="password")
+password = st.text_input("Mot de passe", type="password")
+password_confirm = st.text_input("Confirmer le mot de passe", type="password")
 
-if st.button("Create Account", type="primary", shortcut="Enter"):
+if st.button("Créer le compte", type="primary", shortcut="Enter"):
     if first_name and last_name and email and password and password_confirm:
         if password == password_confirm:
             if '@' not in email:
@@ -41,18 +42,18 @@ if st.button("Create Account", type="primary", shortcut="Enter"):
 
             existing_user = repo.find_by_email(email)
             if existing_user:
-                st.toast("An account with this email already exists", icon=":material/warning:")
+                st.toast("Un compte avec cet email existe déjà", icon=":material/warning:")
                 st.stop()
             user = repo.create(user)
 
             if user.id:
-                st.toast("Account created successfully! Welcome " + user.firstname + "!", icon=":material/check:")
-                with st.spinner("Redirecting to login..."):
+                st.toast("Compte créé avec succès! Bienvenue " + user.firstname + "!", icon=":material/check:")
+                with st.spinner("Redirection vers la page de connexion..."):
                     time.sleep(2)
                     st.switch_page("pages/login.py")
             else:
-                st.toast("Failed to create account", icon=":material/cancer:")
+                st.toast("Échec de la création du compte", icon=":material/cancer:")
         else:
-            st.toast("Passwords do not match", icon=":material/warning:")
+            st.toast("Les mots de passe ne correspondent pas", icon=":material/warning:")
     else:
-        st.toast("Please fill in all fields", icon=":material/warning:")
+        st.toast("Veuillez remplir tous les champs", icon=":material/warning:")

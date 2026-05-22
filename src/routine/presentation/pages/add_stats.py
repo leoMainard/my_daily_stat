@@ -3,7 +3,7 @@ from routine.config.logger import logger
 from routine.utils.streamlit_dialogs import add_stat, display_stat
        
 
-st.write("# Welcome to My Daily Stat!")
+st.write("# Bienvenue sur Routine !")
 
 # récupère toutes les stats
 stats = st.session_state.get("stat", [])
