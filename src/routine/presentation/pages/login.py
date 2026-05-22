@@ -2,8 +2,8 @@ import time
 
 import streamlit as st
 
-from my_daily_stat.db.adapters.postgres import get_cached_connection
-from my_daily_stat.db.repositories.user_repository import UserRepository
+from routine.db.adapters.postgres import get_cached_connection
+from routine.db.repositories.user_repository import UserRepository
 
 
 

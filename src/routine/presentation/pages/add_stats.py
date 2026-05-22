@@ -1,6 +1,6 @@
 import streamlit as st
-from my_daily_stat.config.logger import logger
-from my_daily_stat.utils.streamlit_dialogs import add_stat, display_stat
+from routine.config.logger import logger
+from routine.utils.streamlit_dialogs import add_stat, display_stat
        
 
 st.write("# Welcome to My Daily Stat!")

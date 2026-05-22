@@ -1,7 +1,7 @@
 from typing import List, Optional
-from my_daily_stat.db.base import Repository
-from my_daily_stat.domain.models.user import User
-from my_daily_stat.domain.exceptions import UserNotFoundError
+from routine.db.base import Repository
+from routine.domain.models.user import User
+from routine.domain.exceptions import UserNotFoundError
 
 class UserRepository(Repository[User]):
     

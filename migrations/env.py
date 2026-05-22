@@ -5,8 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.my_daily_stat.config.settings import settings
-from src.my_daily_stat.db.models import Base
+from src.routine.config.settings import settings
+from src.routine.db.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -3,9 +3,9 @@ from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 from typing import List, Optional, Dict, Any
 import streamlit as st
-from my_daily_stat.config.settings import settings
-from my_daily_stat.config.logger import logger
-from my_daily_stat.db.base import DatabaseAdapter
+from routine.config.settings import settings
+from routine.config.logger import logger
+from routine.db.base import DatabaseAdapter
 
 class PostgresAdapter(DatabaseAdapter):
     def __init__(self):

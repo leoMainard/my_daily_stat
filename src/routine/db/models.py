@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
-from my_daily_stat.config.enums import UserRole
+from routine.config.enums import UserRole
 
 Base = declarative_base()
 

@@ -2,10 +2,10 @@ import time
 
 import bcrypt
 import streamlit as st
-from my_daily_stat.config.enums import UserRole
-from my_daily_stat.db.adapters.postgres import get_cached_connection
-from my_daily_stat.db.repositories.user_repository import UserRepository
-from my_daily_stat.domain.models.user import User
+from routine.config.enums import UserRole
+from routine.db.adapters.postgres import get_cached_connection
+from routine.db.repositories.user_repository import UserRepository
+from routine.domain.models.user import User
 
 st.title("Create your account")
 

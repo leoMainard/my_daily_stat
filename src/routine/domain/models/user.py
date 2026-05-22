@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, Dict, Any
 import bcrypt
-from my_daily_stat.config.enums import UserRole
+from routine.config.enums import UserRole
 
 @dataclass
 class User:
