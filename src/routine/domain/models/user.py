@@ -62,12 +62,9 @@ class User:
         """Logique métier simple"""
         return self.role == UserRole.ADMIN
 
-    def update_profile(self, firstname: Optional[str] = None, lastname: Optional[str] = None, email: Optional[str] = None):
-        """Méthode métier pour mise à jour"""
-        if firstname:
-            self.firstname = firstname
-        if lastname:
-            self.lastname = lastname
-        if email:
-            self.email = email
+    def update(self, **kwargs) -> None:
+        """Met à jour les champs de l'utilisateur et la date de mise à jour"""
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
         self.updated_at = datetime.now()

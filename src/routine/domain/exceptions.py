@@ -16,3 +16,12 @@ class UserAlreadyExistsError(DomainException):
 
 class AuthenticationError(DomainException):
     pass
+
+class RoutineNotFoundError(DomainException):
+    pass
+
+class RoutineAlreadyExistsError(DomainException):
+    pass
+
+class RoutineMissingOptionsError(DomainException):
+    pass

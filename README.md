@@ -17,30 +17,27 @@ pip install -e .
 **TODO**
 Refactoring
 ---
-- Ajouter des classes dans domain/. L'idée est de structurer au maximum le code.
-    - User(id, fisrtname, lastname, email, password, creation_date)
-    - UserInfos(id, user_id, tags:list)
-    - Stat(id, user_id, type[bool, int, float, str, list], tags, description, creation_date)
-    - StatValue(id, stat_id, data:jsonb, update_date)
 
 Nouvelle structure à mettre en place :
 ```markdown
 src/
    db/
       base.py ✅         # Interface abstraite
-      models.py ✅
+      models.py ✅ [En cours] : modification du modele de routine
       adapters/
          postgres.py ✅
          sqlite.py
       repositories/
          user_repository.py ✅
+         routine_repository.py ✅
          ...
    domain/
       models/          # Entités métier
          user.py ✅
-         stat.py
+         routine.py [En cours]
       services/        # ← Logique métier
          user_service.py
+         routine_service.py [En cours]
          ...
       exceptions.py    # Exceptions personnalisées
    presentation/
@@ -56,15 +53,13 @@ src/
       integration/
 ```
 
+[En cours]
+- Routine
+   - Affichage des routines enregistrées
+   - Possibilité de modifier une routine. Si changement de type, alors message warning perte d'historique des données (à préciser)
+   - Ajouter des explications sur la création des routines
 
-
-
-
-- Créer une page de connexion utilisateur, avec la création d'un utilisateur ✅
-
-- Option de modification d'une stat
-    - si changement de type, alors message warning perte d'historique des données (à préciser)
-
+[A faire]
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
 - dashboard
