@@ -1,4 +1,3 @@
-import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
@@ -23,7 +22,7 @@ class Routine:
             raise ValueError("Le nom de la routine est obligatoire")
         if not self.type:
             raise ValueError("Le type de la routine est obligatoire")
-        if self.type == "Multiselect" and not self.multiselect_options:
+        if self.type == RoutineType.MULTISELECT.name and not self.multiselect_options:
             raise ValueError("Les options sont obligatoires pour une routine de type Multiselect")
     
     @classmethod
@@ -48,8 +47,8 @@ class Routine:
             'user_id': self.user_id,
             'name': self.name,
             'type': self.type,
-            'multiselect_options': json.dumps(self.multiselect_options),
-            'tags': json.dumps(self.tags),
+            'multiselect_options': self.multiselect_options,
+            'tags': self.tags,
             'description': self.description,
             'created_at': self.created_at,
             'updated_at': self.updated_at

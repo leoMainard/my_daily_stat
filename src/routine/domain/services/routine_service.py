@@ -37,7 +37,6 @@ class RoutineService:
         if multiselect_options:
             multiselect_options = [option.replace('"', ' ') for option in multiselect_options]
             
-
         routine = Routine(
             user_id=user_id,
             name=name,
@@ -47,3 +46,4 @@ class RoutineService:
             description=description,
         )
         return self.repo.create(routine)
+    

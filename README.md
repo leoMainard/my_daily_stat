@@ -55,7 +55,6 @@ src/
 
 [En cours]
 - Routine
-   - Affichage des routines enregistrées
    - Possibilité de modifier une routine. Si changement de type, alors message warning perte d'historique des données (à préciser)
    - Ajouter des explications sur la création des routines
 

@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 
 from routine.db.base import Repository
@@ -29,6 +30,17 @@ class RoutineRepository(Repository[Routine]):
         results = self.db.execute_query(query)
         return [Routine.from_dict(row) for row in results]
     
+    def find_all_by_user_id(self, user_id: str) -> List[Routine]:
+        query = "SELECT * FROM routines WHERE user_id = %(user_id)s ORDER BY created_at DESC"
+        results = self.db.execute_query(query, {'user_id': user_id})
+        return [Routine.from_dict(row) for row in results]
+    
+    def _to_db_params(self, routine: Routine) -> dict:
+        params = routine.to_dict()
+        params['multiselect_options'] = json.dumps(params['multiselect_options'])
+        params['tags'] = json.dumps(params['tags'])
+        return params
+
     def create(self, routine: Routine) -> Routine:
         command = """
             INSERT INTO routines (user_id, name, type, multiselect_options, tags, description, created_at)
@@ -37,18 +49,18 @@ class RoutineRepository(Repository[Routine]):
         """
         with self.db.transaction() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(command, routine.to_dict())
+                cursor.execute(command, self._to_db_params(routine))
                 routine.id = cursor.fetchone()[0]
-        
+
         return routine
-    
+
     def update(self, routine: Routine) -> Routine:
         command = """
-            UPDATE routines 
+            UPDATE routines
             SET name = %(name)s, type = %(type)s, multiselect_options = %(multiselect_options)s, tags = %(tags)s, description = %(description)s, updated_at = NOW()
             WHERE id = %(id)s
         """
-        rows = self.db.execute_command(command, routine.to_dict())
+        rows = self.db.execute_command(command, self._to_db_params(routine))
         
         if rows == 0:
             raise RoutineNotFoundError(f"Routine {routine.id} not found")

@@ -20,7 +20,7 @@ if st.button("Connexion", type="primary", shortcut="Enter"):
         user = service.authenticate(email, password)
         st.session_state.user = user.to_dict()
         with st.spinner("Redirection vers le menu principal ..."):
-            time.sleep(2)
+            time.sleep(1)
             st.switch_page("pages/menu.py")
     except AuthenticationError:
         st.toast("Invalid email or password", icon=":material/warning:")
