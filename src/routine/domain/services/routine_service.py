@@ -47,3 +47,8 @@ class RoutineService:
         )
         return self.repo.create(routine)
     
+    def edit_routine():
+        pass
+
+    def delete_routine():
+        pass
