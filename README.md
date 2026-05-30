@@ -15,15 +15,50 @@ pip install -e .
 ```
 
 **TODO**
-- Créer une page de connexion utilisateur, avec la création d'un utilisateur
-- Créer 3 tables 
-    - User(user_id, name, tags, ?)
-    - Stat_ref(ref_id, user_id, stat_id, type, ?)
-    - Stats(stat_id, date, text, checkbox, feedback, multiselect, number_input, time_input)
+Refactoring
+---
 
-- Option de modification d'une stat
-    - si changement de type, alors message warning perte d'historique des données (à préciser)
+Nouvelle structure à mettre en place :
+```markdown
+src/
+   db/
+      base.py ✅         # Interface abstraite
+      models.py ✅ [En cours] : modification du modele de routine
+      adapters/
+         postgres.py ✅
+         sqlite.py
+      repositories/
+         user_repository.py ✅
+         routine_repository.py ✅
+         ...
+   domain/
+      models/          # Entités métier
+         user.py ✅
+         routine.py [En cours]
+      services/        # ← Logique métier
+         user_service.py
+         routine_service.py [En cours]
+         ...
+      exceptions.py    # Exceptions personnalisées
+   presentation/
+      callbacks/
+      pages/
+      components/      # ← Composants UI réutilisables
+      app.py
+   config/
+      settings.py ✅      # Centralise env.py et autres configs
+      logger.py ✅
+   tests/              # ← Ne pas oublier !
+      unit/
+      integration/
+```
 
+[En cours]
+- Routine
+   - Possibilité de modifier une routine. Si changement de type, alors message warning perte d'historique des données (à préciser)
+   - Ajouter des explications sur la création des routines
+
+[A faire]
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
 - dashboard
