@@ -24,4 +24,4 @@ for index, routine in enumerate(all_buttons):
 # Edition d'une routine : si une routine a été mise en attente pour édition, on affiche le dialog d'édition avec les infos de la routine à éditer
 if st.session_state.get("pending_edit_routine"):
     routine_to_edit = st.session_state.pop("pending_edit_routine")
-    edition_routine(routine_infos=routine_to_edit, type="edit")
+    edition_routine(routine_infos=routine_to_edit, type_dialog_routine="edit")

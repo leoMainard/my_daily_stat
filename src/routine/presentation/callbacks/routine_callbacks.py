@@ -17,7 +17,7 @@ def load_routines():
         )
 
 @st.dialog("Edition d'une routine", on_dismiss="rerun")
-def edition_routine(routine_infos: dict = None, type = "add"):
+def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
     """ Fonction  de callback pour l'ajout, la modification ou la supression d'une routine.
     Le comportement de la fonction dépend du paramètre type qui peut être "add", "edit" ou "delete".
 
@@ -61,18 +61,34 @@ def edition_routine(routine_infos: dict = None, type = "add"):
     if btn_save_routine:
         service = RoutineService(RoutineRepository(get_cached_connection()))
         try:
-            routine = service.add_routine(
-                user_id=st.session_state.user["id"],
-                name=routine_name,
-                type=type,
-                multiselect_options=multiselect_options,
-                tags=[],
+            if type_dialog_routine == "add":
+                routine = service.add_routine(
+                    user_id=st.session_state.user["id"],
+                    name=routine_name,
+                    type=type,
+                    multiselect_options=multiselect_options,
+                    tags=[],
                 description=description
-            )
-            st.success(
-                body="Votre routine a été ajoutée !", 
-                icon="🔥"
-            )
+                )
+
+                st.success(
+                    body="Votre routine a été ajoutée !", 
+                    icon="🔥"
+                )
+            elif type_dialog_routine == "edit":
+                routine = service.update_routine(
+                    routine_id=routine_infos["id"],
+                    name=routine_name,
+                    type=type,
+                    multiselect_options=multiselect_options,
+                    tags=[],
+                    description=description
+                )
+                st.success(
+                    body="Votre routine a été modifiée !", 
+                    icon="🔥"
+                )
+            
         except RoutineMissingOptionsError:
             st.warning(
                 body="Les options sont obligatoires pour une routine de type Multiselect", 
