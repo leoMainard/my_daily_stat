@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 
 from routine.db.adapters.postgres import get_cached_connection
@@ -19,9 +20,9 @@ def load_routines():
 @st.dialog("Edition d'une routine", on_dismiss="rerun")
 def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
     """ Fonction  de callback pour l'ajout, la modification ou la supression d'une routine.
-    Le comportement de la fonction dépend du paramètre type qui peut être "add", "edit" ou "delete".
+    Le comportement de la fonction dépend du paramètre type qui peut être "add" ou "edit".
 
-    En cas d'edition ou de suppression, passer les infos de la routine dans le paramètre routine_infos.
+    En cas d'edition, passer les infos de la routine dans le paramètre routine_infos.
     """
     routine_name = st.text_input(
         label = "Nom de la routine",
@@ -87,8 +88,7 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
                 st.success(
                     body="Votre routine a été modifiée !", 
                     icon="🔥"
-                )
-            
+                )            
         except RoutineMissingOptionsError:
             st.warning(
                 body="Les options sont obligatoires pour une routine de type Multiselect", 
@@ -190,6 +190,45 @@ def display_routine(routines_infos: dict):
                 # on met en attente les infos de la routine à éditer dans le session state pour les récupérer dans le dialog d'édition
                 st.session_state["pending_edit_routine"] = routines_infos
                 st.rerun()
+
+            if btn_delete_routine:
+                st.session_state["pending_delete_routine"] = routines_infos["id"]
+
+            if st.session_state.get("pending_delete_routine") == routines_infos["id"]:
+                # on affiche un message de confirmation avant de supprimer la routine
+                st.warning("Êtes-vous sûr de vouloir supprimer cette routine ?", icon="⚠️")
+                col1, col2 = st.columns([2, 1])
+                btn_confirm_delete = col1.button(
+                    label = "Confirmer la suppression", 
+                    type = "primary",
+                    use_container_width=True,
+                    icon = ":material/delete:"
+                )
+
+                btn_cancel_delete = col2.button(
+                    label = "Annuler", 
+                    type = "secondary",
+                    icon = ":material/close:",
+                    use_container_width=True,
+                    on_click=lambda: st.session_state.pop("pending_delete_routine", None)
+                )
+
+                if btn_confirm_delete :
+                    service = RoutineService(RoutineRepository(get_cached_connection()))
+                    service.delete_routine(routines_infos["id"])
+                    del st.session_state["pending_delete_routine"]
+                    st.success(
+                        body="Votre routine a été supprimée !", 
+                        icon="🔥"
+                    )
+                    with st.spinner("Ce module se fermera dans quelques instants ..."):
+                        time.sleep(2)
+                        st.switch_page("pages/routine.py")
+                if btn_cancel_delete:
+                    del st.session_state["pending_delete_routine"]
+                
+
+
         except Exception as e:
             st.error(
                 body="An erreur has occured! {}".format(e),

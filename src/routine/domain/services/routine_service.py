@@ -79,9 +79,8 @@ class RoutineService:
         )
         return self.repo.update(routine)
         
-
     def delete_routine(self, routine_id: int):
         routine = self.repo.find_by_id(routine_id)
         if not routine:
             raise ValueError("Routine non trouvée")
-        return self.repo.delete(routine)
+        return self.repo.delete(routine_id)
