@@ -2,12 +2,11 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 from routine.config.enums import RoutineType
-from sqlalchemy import UUID
 
 @dataclass
 class Routine:
     """ Classe représentant une routine journalière."""
-    user_id: UUID
+    user_id: int
     type: RoutineType
     name: str
     id: Optional[int] = None

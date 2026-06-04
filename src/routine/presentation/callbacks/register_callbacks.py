@@ -15,6 +15,6 @@ def register(first_name, last_name, email, password, password_confirm):
             time.sleep(2)
             st.switch_page("pages/login.py")
     except ValueError as exc:
-        st.toast(str(exc), icon=":material/warning:")
+        st.toast(f"Une erreur est survenue : {str(exc)}", icon=":material/warning:")
     except UserAlreadyExistsError:
         st.toast("Un compte existe déjà avec cet email", icon=":material/warning:")
