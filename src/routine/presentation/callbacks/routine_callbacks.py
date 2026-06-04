@@ -39,7 +39,11 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
     type = st.selectbox(
         label = "Type",
         index = [index for index, r in enumerate(RoutineType) if r.name == routine_infos.get("type", "")][0] if routine_infos is not None else 0,
-        options = [r.value for r in RoutineType]
+        options = [r.value for r in RoutineType],
+        help="Le type de la routine déterminera la manière dont vous pourrez interagir avec elle dans votre suivi quotidien. " \
+        "Par exemple, une routine de type Checkbox vous permettra de simplement cocher si vous avez réalisé la routine ou non, " \
+        "tandis qu'une routine de type Multiselect vous permettra de sélectionner plusieurs options pour suivre différents aspects de votre routine. " \
+        "Choisissez le type qui correspond le mieux à la nature de votre routine et à la manière dont vous souhaitez suivre vos progrès au fil du temps."
     )
 
     if type_dialog_routine == "edit":
