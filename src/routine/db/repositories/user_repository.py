@@ -1,3 +1,4 @@
+from routine.config.logger import logger
 from typing import List, Optional
 from routine.db.base import Repository
 from routine.domain.models.user import User
@@ -35,6 +36,7 @@ class UserRepository(Repository[User]):
                 cursor.execute(command, user.to_dict())
                 user.id = cursor.fetchone()[0]
         
+        logger.info(f"User created with id {user.id}")
         return user
     
     def update(self, user: User) -> User:
@@ -54,4 +56,5 @@ class UserRepository(Repository[User]):
     def delete(self, id: int) -> bool:
         command = "DELETE FROM users WHERE id = %(id)s"
         rows = self.db.execute_command(command, {'id': id})
+        logger.info(f"User deleted with id {id}")
         return rows > 0

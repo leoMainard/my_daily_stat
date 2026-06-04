@@ -2,6 +2,7 @@ import json
 from typing import List, Optional
 
 from routine.db.base import Repository
+from routine.config.logger import logger
 from routine.domain.models.routine import Routine
 from routine.domain.exceptions import RoutineNotFoundError
 
@@ -52,6 +53,7 @@ class RoutineRepository(Repository[Routine]):
                 cursor.execute(command, self._to_db_params(routine))
                 routine.id = cursor.fetchone()[0]
 
+        logger.info(f"Routine created with id {routine.id}")
         return routine
 
     def update(self, routine: Routine) -> Routine:
@@ -71,4 +73,5 @@ class RoutineRepository(Repository[Routine]):
     def delete(self, id: int) -> bool:
         command = "DELETE FROM routines WHERE id = %(id)s"
         rows = self.db.execute_command(command, {'id': id})
+        logger.info(f"Routine deleted with id {id}")
         return rows > 0
