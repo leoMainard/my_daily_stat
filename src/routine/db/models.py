@@ -39,11 +39,10 @@ class RoutinesModel(Base):
     updated_at = Column(DateTime, nullable=True, onupdate=func.now())
 
 class RoutineValuesModel(Base):
-    __tablename__ = 'routine_values'
+    __tablename__ = 'routines_values'
     
     id = Column(Integer, primary_key=True)
     routine_id = Column(Integer, ForeignKey('routines.id', ondelete='CASCADE'), nullable=False)
     value = Column(JSONB, nullable=False)
-    recorded_at = Column(DateTime, nullable=False, server_default=func.now())
-
-# TODO
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=True, onupdate=func.now())
