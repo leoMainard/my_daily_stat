@@ -42,6 +42,12 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
         options = [r.value for r in RoutineType]
     )
 
+    if type_dialog_routine == "edit":
+         st.info(
+            body="Modifier le type supprimera l'historique de cette routine, soyez prudent !", 
+            icon=":material/info:"
+        )
+
     multiselect_options = []
     if type == RoutineType.MULTISELECT.value :
         multiselect_options = st.multiselect(
