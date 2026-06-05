@@ -120,6 +120,15 @@ def display_routine(routines_infos: dict):
     def _dialog():
         try:
             st.badge(routines_infos.get("description", ""), icon=":material/lightbulb_2:" ,color="blue")
+            
+            routine_date_value = st.date_input(
+                label = f"Date de suivi pour votre routine",
+                value = "today",
+                format="DD/MM/YYYY"
+            )
+
+            # TODO : en fonction de la date sélectionnée, rechercher les valeurs enregistrées pour
+            # cette routine et les afficher dans les inputs
 
             if routines_infos["type"] == RoutineType.TEXT.name:
                 user_input = st.text_input(
