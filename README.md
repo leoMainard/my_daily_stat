@@ -16,14 +16,15 @@ pip install -e .
 
 
 [En cours]
-- Ajouter la sauvegarde des valeurs d'une routine
+- Sauvegarder la connexion login
 
 
 [A faire]
-- Sauvegarder la connexion login
 - Pouvoir supprimer la valeur d'une routine
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
+- ajouter des filtres sur l'onglet Mes routines (date pour le moment)
+- colorisation des routines effectuées sur la page Mes routines
 - dashboard
 - possibilité de modifier son profil
    * possibilité de supprimer son compte

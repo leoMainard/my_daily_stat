@@ -66,10 +66,20 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
             help="Ajouter les différentes options que vous souhaitez suivre pour cette routine. Par exemple, si votre routine est 'Activités sportives', vous pourriez ajouter des options comme 'Football', 'Basketball', 'Natation', etc. **Les guillemets seront automatiquement supprimés pour éviter les problèmes de base de données.**"
         )
 
-    btn_save_routine = st.button(
+    left, right = st.columns([2,1])
+
+    btn_save_routine = left.button(
         label = "Sauvegarder",
         type = "primary",
-        icon = ":material/check:"
+        icon = ":material/check:",
+        use_container_width=True
+    )
+
+    btn_delete_routine = right.button(
+        label = "Supprimer",
+        type = "secondary",
+        icon = ":material/delete:",
+        use_container_width=True
     )
 
     if btn_save_routine:
@@ -117,6 +127,43 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
                 body="Une erreur est survenue ... {}".format(e), 
                 icon="🚨"
             )
+
+    if btn_delete_routine:
+        st.session_state["pending_delete_routine"] = routine_infos["id"]
+
+    if st.session_state.get("pending_delete_routine") == routine_infos["id"]:
+        # on affiche un message de confirmation avant de supprimer la routine
+        st.warning("Êtes-vous sûr de vouloir supprimer cette routine ?", icon="⚠️")
+        col1, col2 = st.columns([2, 1])
+        btn_confirm_delete = col1.button(
+            label = "Confirmer la suppression", 
+            type = "primary",
+            use_container_width=True,
+            icon = ":material/delete:"
+        )
+
+        btn_cancel_delete = col2.button(
+            label = "Annuler", 
+            type = "secondary",
+            icon = ":material/close:",
+            use_container_width=True,
+            on_click=lambda: st.session_state.pop("pending_delete_routine", None)
+        )
+
+        if btn_confirm_delete :
+            service = RoutineService(RoutineRepository(get_cached_connection()))
+            service.delete_routine(routine_infos["id"])
+            del st.session_state["pending_delete_routine"]
+            st.success(
+                body="Votre routine a été supprimée !", 
+                icon="🔥"
+            )
+            with st.spinner("Ce module se fermera dans quelques instants ..."):
+                time.sleep(2)
+                st.switch_page("pages/routine.py")
+
+        if btn_cancel_delete:
+            del st.session_state["pending_delete_routine"]
 
 def display_routine(routines_infos: dict):
     @st.dialog(routines_infos["name"], on_dismiss="rerun")
@@ -190,7 +237,7 @@ def display_routine(routines_infos: dict):
                     key = f"time_{routine_id}_{date_key}"
                 )
 
-            left, mid, right = st.columns(3)
+            left, right = st.columns([2, 1])
             btn_save_routine = left.button(
                 label = "Sauvegarder",
                 type = "primary",
@@ -198,17 +245,10 @@ def display_routine(routines_infos: dict):
                 use_container_width=True
             )
 
-            btn_edit_routine = mid.button(
+            btn_edit_routine = right.button(
                 label = "Modifier",
                 type = "secondary",
                 icon = ":material/edit:",
-                use_container_width=True
-            )
-
-            btn_delete_routine = right.button(
-                label = "Supprimer",
-                type = "secondary",
-                icon = ":material/delete:",
                 use_container_width=True
             )
 
@@ -230,42 +270,6 @@ def display_routine(routines_infos: dict):
                 # on met en attente les infos de la routine à éditer dans le session state pour les récupérer dans le dialog d'édition
                 st.session_state["pending_edit_routine"] = routines_infos
                 st.rerun()
-
-            if btn_delete_routine:
-                st.session_state["pending_delete_routine"] = routines_infos["id"]
-
-            if st.session_state.get("pending_delete_routine") == routines_infos["id"]:
-                # on affiche un message de confirmation avant de supprimer la routine
-                st.warning("Êtes-vous sûr de vouloir supprimer cette routine ?", icon="⚠️")
-                col1, col2 = st.columns([2, 1])
-                btn_confirm_delete = col1.button(
-                    label = "Confirmer la suppression", 
-                    type = "primary",
-                    use_container_width=True,
-                    icon = ":material/delete:"
-                )
-
-                btn_cancel_delete = col2.button(
-                    label = "Annuler", 
-                    type = "secondary",
-                    icon = ":material/close:",
-                    use_container_width=True,
-                    on_click=lambda: st.session_state.pop("pending_delete_routine", None)
-                )
-
-                if btn_confirm_delete :
-                    service = RoutineService(RoutineRepository(get_cached_connection()))
-                    service.delete_routine(routines_infos["id"])
-                    del st.session_state["pending_delete_routine"]
-                    st.success(
-                        body="Votre routine a été supprimée !", 
-                        icon="🔥"
-                    )
-                    with st.spinner("Ce module se fermera dans quelques instants ..."):
-                        time.sleep(2)
-                        st.switch_page("pages/routine.py")
-                if btn_cancel_delete:
-                    del st.session_state["pending_delete_routine"]
 
         except Exception as e:
             st.error(
