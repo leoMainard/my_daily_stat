@@ -1,10 +1,14 @@
+import datetime
+import time
 import streamlit as st
 
 from routine.db.adapters.postgres import get_cached_connection
 from routine.db.repositories.routine_repository import RoutineRepository
+from routine.db.repositories.routine_value_repository import RoutineValueRepository
 from routine.domain.exceptions import RoutineAlreadyExistsError, RoutineMissingOptionsError
 from routine.domain.services.routine_service import RoutineService
 from routine.config.enums import RoutineType
+from routine.domain.services.routine_value_service import RoutineValueService
 
 def load_routines():
     service = RoutineService(RoutineRepository(get_cached_connection()))
@@ -17,11 +21,11 @@ def load_routines():
         )
 
 @st.dialog("Edition d'une routine", on_dismiss="rerun")
-def edition_routine(routine_infos: dict = None, type = "add"):
+def edition_routine(routine_infos: dict = None, type_dialog_routine = "add"):
     """ Fonction  de callback pour l'ajout, la modification ou la supression d'une routine.
-    Le comportement de la fonction dépend du paramètre type qui peut être "add", "edit" ou "delete".
+    Le comportement de la fonction dépend du paramètre type qui peut être "add" ou "edit".
 
-    En cas d'edition ou de suppression, passer les infos de la routine dans le paramètre routine_infos.
+    En cas d'edition, passer les infos de la routine dans le paramètre routine_infos.
     """
     routine_name = st.text_input(
         label = "Nom de la routine",
@@ -38,8 +42,18 @@ def edition_routine(routine_infos: dict = None, type = "add"):
     type = st.selectbox(
         label = "Type",
         index = [index for index, r in enumerate(RoutineType) if r.name == routine_infos.get("type", "")][0] if routine_infos is not None else 0,
-        options = [r.value for r in RoutineType]
+        options = [r.value for r in RoutineType],
+        help="Le type de la routine déterminera la manière dont vous pourrez interagir avec elle dans votre suivi quotidien. " \
+        "Par exemple, une routine de type Checkbox vous permettra de simplement cocher si vous avez réalisé la routine ou non, " \
+        "tandis qu'une routine de type Multiselect vous permettra de sélectionner plusieurs options pour suivre différents aspects de votre routine. " \
+        "Choisissez le type qui correspond le mieux à la nature de votre routine et à la manière dont vous souhaitez suivre vos progrès au fil du temps."
     )
+
+    if type_dialog_routine == "edit":
+         st.info(
+            body="Modifier le type supprimera l'historique de cette routine, soyez prudent !", 
+            icon=":material/info:"
+        )
 
     multiselect_options = []
     if type == RoutineType.MULTISELECT.value :
@@ -52,27 +66,52 @@ def edition_routine(routine_infos: dict = None, type = "add"):
             help="Ajouter les différentes options que vous souhaitez suivre pour cette routine. Par exemple, si votre routine est 'Activités sportives', vous pourriez ajouter des options comme 'Football', 'Basketball', 'Natation', etc. **Les guillemets seront automatiquement supprimés pour éviter les problèmes de base de données.**"
         )
 
-    btn_save_routine = st.button(
+    left, right = st.columns([2,1])
+
+    btn_save_routine = left.button(
         label = "Sauvegarder",
         type = "primary",
-        icon = ":material/check:"
+        icon = ":material/check:",
+        use_container_width=True
+    )
+
+    btn_delete_routine = right.button(
+        label = "Supprimer",
+        type = "secondary",
+        icon = ":material/delete:",
+        use_container_width=True
     )
 
     if btn_save_routine:
         service = RoutineService(RoutineRepository(get_cached_connection()))
         try:
-            routine = service.add_routine(
-                user_id=st.session_state.user["id"],
-                name=routine_name,
-                type=type,
-                multiselect_options=multiselect_options,
-                tags=[],
+            if type_dialog_routine == "add":
+                routine = service.add_routine(
+                    user_id=st.session_state.user["id"],
+                    name=routine_name,
+                    type=type,
+                    multiselect_options=multiselect_options,
+                    tags=[],
                 description=description
-            )
-            st.success(
-                body="Votre routine a été ajoutée !", 
-                icon="🔥"
-            )
+                )
+
+                st.success(
+                    body="Votre routine a été ajoutée !", 
+                    icon="🔥"
+                )
+            elif type_dialog_routine == "edit":
+                routine = service.update_routine(
+                    routine_id=routine_infos["id"],
+                    name=routine_name,
+                    type=type,
+                    multiselect_options=multiselect_options,
+                    tags=[],
+                    description=description
+                )
+                st.success(
+                    body="Votre routine a été modifiée !", 
+                    icon="🔥"
+                )            
         except RoutineMissingOptionsError:
             st.warning(
                 body="Les options sont obligatoires pour une routine de type Multiselect", 
@@ -89,27 +128,85 @@ def edition_routine(routine_infos: dict = None, type = "add"):
                 icon="🚨"
             )
 
+    if btn_delete_routine:
+        st.session_state["pending_delete_routine"] = routine_infos["id"]
+
+    if st.session_state.get("pending_delete_routine") == routine_infos["id"]:
+        # on affiche un message de confirmation avant de supprimer la routine
+        st.warning("Êtes-vous sûr de vouloir supprimer cette routine ?", icon="⚠️")
+        col1, col2 = st.columns([2, 1])
+        btn_confirm_delete = col1.button(
+            label = "Confirmer la suppression", 
+            type = "primary",
+            use_container_width=True,
+            icon = ":material/delete:"
+        )
+
+        btn_cancel_delete = col2.button(
+            label = "Annuler", 
+            type = "secondary",
+            icon = ":material/close:",
+            use_container_width=True,
+            on_click=lambda: st.session_state.pop("pending_delete_routine", None)
+        )
+
+        if btn_confirm_delete :
+            service = RoutineService(RoutineRepository(get_cached_connection()))
+            service.delete_routine(routine_infos["id"])
+            del st.session_state["pending_delete_routine"]
+            st.success(
+                body="Votre routine a été supprimée !", 
+                icon="🔥"
+            )
+            with st.spinner("Ce module se fermera dans quelques instants ..."):
+                time.sleep(2)
+                st.switch_page("pages/routine.py")
+
+        if btn_cancel_delete:
+            del st.session_state["pending_delete_routine"]
+
 def display_routine(routines_infos: dict):
     @st.dialog(routines_infos["name"], on_dismiss="rerun")
     def _dialog():
         try:
+            service = RoutineValueService(RoutineValueRepository(get_cached_connection()))
+
             st.badge(routines_infos.get("description", ""), icon=":material/lightbulb_2:" ,color="blue")
+            
+            routine_date_value: datetime.date = st.date_input(
+                label = f"Date de suivi pour votre routine",
+                value = "today",
+                format="DD/MM/YYYY"
+            )
+
+            routine_value = service.get_routine_value_by_routine_id_and_date(routines_infos["id"], routine_date_value)
+
+            routine_id = routines_infos["id"]
+            date_key = str(routine_date_value)
 
             if routines_infos["type"] == RoutineType.TEXT.name:
                 user_input = st.text_input(
                     label = f"text_{routines_infos['name']}",
                     placeholder = f"Ajoutez votre texte ici.",
-                    label_visibility="collapsed"
+                    label_visibility="collapsed",
+                    value = routine_value.value["value"] if routine_value else "",
+                    key = f"text_{routine_id}_{date_key}"
                 )
 
             elif routines_infos["type"] == RoutineType.CHECKBOX.name:
                 user_input = st.checkbox(
-                    label = f"Cliquez ici si vous avez réalisé votre routine aujourd'hui !"
+                    label = f"Cliquez ici si vous avez réalisé votre routine aujourd'hui !",
+                    value = bool(routine_value.value["value"]) if routine_value else False,
+                    key = f"checkbox_{routine_id}_{date_key}"
                 )
 
             elif routines_infos["type"] == RoutineType.FEEDBACK.name:
+                feedback_key = f"feedback_{routine_id}_{date_key}"
+                if routine_value and feedback_key not in st.session_state:
+                    st.session_state[feedback_key] = routine_value.value["value"]
                 user_input = st.feedback(
-                    options = "faces"
+                    options = "faces",
+                    key = feedback_key
                 )
 
             elif routines_infos["type"] == RoutineType.MULTISELECT.name:
@@ -117,7 +214,9 @@ def display_routine(routines_infos: dict):
                     label = f"multiselect_{routines_infos['name']}",
                     options = routines_infos.get("multiselect_options", []),
                     placeholder = f"Sélectionnez vos options ici.",
-                    label_visibility="collapsed"
+                    label_visibility="collapsed",
+                    default = routine_value.value["value"] if routine_value else [],
+                    key = f"multiselect_{routine_id}_{date_key}"
                 )
 
             elif routines_infos["type"] == RoutineType.NUMBER.name:
@@ -125,16 +224,20 @@ def display_routine(routines_infos: dict):
                     label = f"number_{routines_infos['name']}",
                     placeholder = f"Ajoutez votre nombre ici.",
                     step=1,
-                    label_visibility="collapsed"
+                    label_visibility="collapsed",
+                    value = routine_value.value["value"] if routine_value else None,
+                    key = f"number_{routine_id}_{date_key}"
                 )
 
             elif routines_infos["type"] == RoutineType.TIME.name:
                 user_input = st.time_input(
                     label = f"time_{routines_infos['name']}",
-                    label_visibility="collapsed"
+                    label_visibility="collapsed",
+                    value = routine_value.value["value"] if routine_value else None,
+                    key = f"time_{routine_id}_{date_key}"
                 )
 
-            left, mid, right = st.columns(3)
+            left, right = st.columns([2, 1])
             btn_save_routine = left.button(
                 label = "Sauvegarder",
                 type = "primary",
@@ -142,38 +245,32 @@ def display_routine(routines_infos: dict):
                 use_container_width=True
             )
 
-            btn_edit_routine = mid.button(
+            btn_edit_routine = right.button(
                 label = "Modifier",
                 type = "secondary",
                 icon = ":material/edit:",
                 use_container_width=True
             )
 
-            btn_delete_routine = right.button(
-                label = "Supprimer",
-                type = "secondary",
-                icon = ":material/delete:",
-                use_container_width=True
-            )
-
             if btn_save_routine:
-                if "daily_stats" not in st.session_state:
-                    st.session_state["daily_stats"] = []
-
-                st.session_state.daily_stats.append({
-                    "name" : routines_infos["name"],
-                    "type" : routines_infos["type"],
-                    "value" : user_input
-                })
-                st.success(
-                    body="Your daily stat was saved!",
-                    icon="🔥"
-                )
+                try:
+                    service.save_routine_value(
+                        routine_id=routines_infos["id"],
+                        value=user_input,
+                        date=routine_date_value
+                    )
+                    st.success(body="Valeur sauvegardée !", icon="🔥")
+                except Exception as e:
+                    st.error(
+                        body=str(e),
+                        icon="🚨"
+                    )
             
             if btn_edit_routine:
                 # on met en attente les infos de la routine à éditer dans le session state pour les récupérer dans le dialog d'édition
                 st.session_state["pending_edit_routine"] = routines_infos
                 st.rerun()
+
         except Exception as e:
             st.error(
                 body="An erreur has occured! {}".format(e),

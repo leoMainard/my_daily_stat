@@ -14,51 +14,19 @@ source .venv/bin/activate  # sous Windows : .venv\Scripts\activate
 pip install -e .
 ```
 
-**TODO**
-Refactoring
----
-
-Nouvelle structure à mettre en place :
-```markdown
-src/
-   db/
-      base.py ✅         # Interface abstraite
-      models.py ✅ [En cours] : modification du modele de routine
-      adapters/
-         postgres.py ✅
-         sqlite.py
-      repositories/
-         user_repository.py ✅
-         routine_repository.py ✅
-         ...
-   domain/
-      models/          # Entités métier
-         user.py ✅
-         routine.py [En cours]
-      services/        # ← Logique métier
-         user_service.py
-         routine_service.py [En cours]
-         ...
-      exceptions.py    # Exceptions personnalisées
-   presentation/
-      callbacks/
-      pages/
-      components/      # ← Composants UI réutilisables
-      app.py
-   config/
-      settings.py ✅      # Centralise env.py et autres configs
-      logger.py ✅
-   tests/              # ← Ne pas oublier !
-      unit/
-      integration/
-```
 
 [En cours]
-- Routine
-   - Possibilité de modifier une routine. Si changement de type, alors message warning perte d'historique des données (à préciser)
-   - Ajouter des explications sur la création des routines
+- Pouvoir supprimer la valeur d'une routine
+
 
 [A faire]
+- colorisation des routines effectuées sur la page Mes routines
+- ajouter des filtres sur l'onglet Mes routines (date pour le moment)
+- dashboard
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
-- dashboard
+- possibilité de modifier son profil
+   * possibilité de supprimer son compte
+- explication de l'encryptage du mot de passe
+- propositions de routines les plus faites par les autres utilisateurs
+- preremplissage d'une routine par rapport aux valeurs moyennes de l'utilisateur

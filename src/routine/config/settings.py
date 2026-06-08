@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DB_NAME: str = os.getenv("DB_NAME")
     DB_USER: str = os.getenv("DB_USER")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD")
+    SESSION_SECRET: str = os.getenv("SESSION_SECRET")
 
     # App
     APP_NAME: str = "Mon App Streamlit"

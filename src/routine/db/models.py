@@ -39,11 +39,18 @@ class RoutinesModel(Base):
     updated_at = Column(DateTime, nullable=True, onupdate=func.now())
 
 class RoutineValuesModel(Base):
-    __tablename__ = 'routine_values'
-    
+    __tablename__ = 'routines_values'
+    # Il y a une valeur de routine par date et par routine, 
+    # mais une routine peut avoir plusieurs valeurs dans le 
+    # temps (ex: valeur de la routine "sport" pour le 01/01/2024, puis une autre valeur pour le 02/01/2024)
+
+    # On peut donc identifier une valeur de routine par la combinaison de son routine_id et de sa date
+    __table_args__ = (
+        UniqueConstraint('routine_id', 'date', name='uq_routine_value_routine_id_date'),
+    )
     id = Column(Integer, primary_key=True)
     routine_id = Column(Integer, ForeignKey('routines.id', ondelete='CASCADE'), nullable=False)
     value = Column(JSONB, nullable=False)
-    recorded_at = Column(DateTime, nullable=False, server_default=func.now())
-
-# TODO
+    date = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=True, onupdate=func.now())
