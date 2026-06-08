@@ -1,7 +1,16 @@
 import streamlit as st
 
+from streamlit_cookies_controller import CookieController
+from routine.presentation.utils.session import decode_session_token
 
 st.set_page_config(layout="centered")
+
+if "user" not in st.session_state:
+    token = CookieController().get("session")
+    if token:
+        user = decode_session_token(token)
+        if user:
+            st.session_state.user = user
 
 if "user" not in st.session_state:
     pages = [
