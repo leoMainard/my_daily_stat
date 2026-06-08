@@ -16,11 +16,17 @@ pip install -e .
 
 
 [En cours]
-- Routine
-   - Ajouter des explications sur la création des routines
+- Ajouter la sauvegarde des valeurs d'une routine
+
 
 [A faire]
-- Ajouter la sauvegarde des valeurs d'une routine
+- Sauvegarder la connexion login
+- Pouvoir supprimer la valeur d'une routine
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
 - dashboard
+- possibilité de modifier son profil
+   * possibilité de supprimer son compte
+- explication de l'encryptage du mot de passe
+- propositions de routines les plus faites par les autres utilisateurs
+- preremplissage d'une routine par rapport aux valeurs moyennes de l'utilisateur

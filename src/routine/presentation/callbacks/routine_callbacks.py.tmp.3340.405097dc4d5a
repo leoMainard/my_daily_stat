@@ -134,27 +134,22 @@ def display_routine(routines_infos: dict):
 
             routine_value = service.get_routine_value_by_routine_id_and_date(routines_infos["id"], routine_date_value)
 
-            routine_id = routines_infos["id"]
-            date_key = str(routine_date_value)
-
             if routines_infos["type"] == RoutineType.TEXT.name:
                 user_input = st.text_input(
                     label = f"text_{routines_infos['name']}",
                     placeholder = f"Ajoutez votre texte ici.",
                     label_visibility="collapsed",
-                    value = routine_value.value["value"] if routine_value else "",
-                    key = f"text_{routine_id}_{date_key}"
+                    value = routine_value.value["value"] if routine_value else ""
                 )
 
             elif routines_infos["type"] == RoutineType.CHECKBOX.name:
                 user_input = st.checkbox(
                     label = f"Cliquez ici si vous avez réalisé votre routine aujourd'hui !",
-                    value = bool(routine_value.value["value"]) if routine_value else False,
-                    key = f"checkbox_{routine_id}_{date_key}"
+                    value = routine_value.value["value"] if routine_value else ""
                 )
 
             elif routines_infos["type"] == RoutineType.FEEDBACK.name:
-                feedback_key = f"feedback_{routine_id}_{date_key}"
+                feedback_key = f"feedback_{routines_infos['name']}_{routine_date_value}"
                 if routine_value and feedback_key not in st.session_state:
                     st.session_state[feedback_key] = routine_value.value["value"]
                 user_input = st.feedback(
@@ -168,8 +163,7 @@ def display_routine(routines_infos: dict):
                     options = routines_infos.get("multiselect_options", []),
                     placeholder = f"Sélectionnez vos options ici.",
                     label_visibility="collapsed",
-                    default = routine_value.value["value"] if routine_value else [],
-                    key = f"multiselect_{routine_id}_{date_key}"
+                    default = routine_value.value["value"] if routine_value else []
                 )
 
             elif routines_infos["type"] == RoutineType.NUMBER.name:
@@ -178,16 +172,14 @@ def display_routine(routines_infos: dict):
                     placeholder = f"Ajoutez votre nombre ici.",
                     step=1,
                     label_visibility="collapsed",
-                    value = routine_value.value["value"] if routine_value else None,
-                    key = f"number_{routine_id}_{date_key}"
+                    value = routine_value.value["value"] if routine_value else ""
                 )
 
             elif routines_infos["type"] == RoutineType.TIME.name:
                 user_input = st.time_input(
                     label = f"time_{routines_infos['name']}",
                     label_visibility="collapsed",
-                    value = routine_value.value["value"] if routine_value else None,
-                    key = f"time_{routine_id}_{date_key}"
+                    value = routine_value.value["value"] if routine_value else ""
                 )
 
             left, mid, right = st.columns(3)
@@ -219,10 +211,9 @@ def display_routine(routines_infos: dict):
                         value=user_input,
                         date=routine_date_value
                     )
-                    st.success(body="Valeur sauvegardée !", icon="🔥")
                 except Exception as e:
                     st.error(
-                        body=str(e),
+                        body=str(e), 
                         icon="🚨"
                     )
             

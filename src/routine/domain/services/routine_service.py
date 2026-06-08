@@ -10,7 +10,7 @@ class RoutineService:
 
     def add_routine(
         self,
-        user_id: str,
+        user_id: int,
         name: str,
         type: Union[str, RoutineType],
         multiselect_options: Optional[List[str]],
