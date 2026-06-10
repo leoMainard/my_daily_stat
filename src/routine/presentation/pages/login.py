@@ -9,5 +9,3 @@ password = st.text_input("Mot de passe", type="password")
 
 if st.button("Connexion", type="primary", shortcut="Enter"):
     login(email, password)
-
-

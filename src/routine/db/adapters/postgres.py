@@ -7,17 +7,18 @@ from routine.config.settings import settings
 from routine.config.logger import logger
 from routine.db.base import DatabaseAdapter
 
+
 class PostgresAdapter(DatabaseAdapter):
     def __init__(self):
         self._connection = None
         self._connection_params = {
-            'host': settings.DB_HOST,
-            'port': settings.DB_PORT,
-            'database': settings.DB_NAME,
-            'user': settings.DB_USER,
-            'password': settings.DB_PASSWORD,
+            "host": settings.DB_HOST,
+            "port": settings.DB_PORT,
+            "database": settings.DB_NAME,
+            "user": settings.DB_USER,
+            "password": settings.DB_PASSWORD,
         }
-    
+
     def connect(self) -> None:
         if self._connection is None or self._connection.closed:
             try:
@@ -26,12 +27,12 @@ class PostgresAdapter(DatabaseAdapter):
             except Exception as e:
                 logger.error(f"Erreur de connexion : {e}")
                 raise
-    
+
     def disconnect(self) -> None:
         if self._connection and not self._connection.closed:
             self._connection.close()
             logger.info("Connexion PostgreSQL fermée")
-    
+
     @contextmanager
     def transaction(self):
         """Context manager pour gérer les transactions"""
@@ -43,20 +44,22 @@ class PostgresAdapter(DatabaseAdapter):
             self._connection.rollback()
             logger.error(f"Transaction annulée : {e}")
             raise
-    
-    def execute_query(self, query: str, params: Optional[Dict] = None) -> List[Dict[str, Any]]:
+
+    def execute_query(
+        self, query: str, params: Optional[Dict] = None
+    ) -> List[Dict[str, Any]]:
         """SELECT queries
-        
+
         Args:
             query (str): La requête SQL à exécuter
             params (Optional[Dict]): Les paramètres pour la requête
-            
+
         Returns:
             List[Dict[str, Any]]: Les résultats de la requête sous forme de liste de dicts
-            
+
         Example:
             results = db_adapter.execute_query("SELECT * FROM users WHERE id = %(id)s", {'id': 1})
-            
+
             # Example with parameters:
             results = db_adapter.execute_query("SELECT * FROM users WHERE email = %(email)s", {'email': 'user@example.com'})
         """
@@ -64,10 +67,10 @@ class PostgresAdapter(DatabaseAdapter):
         with self._connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, params or {})
             return [dict(row) for row in cursor.fetchall()]
-    
+
     def execute_command(self, command: str, params: Optional[Dict] = None) -> int:
         """INSERT/UPDATE/DELETE
-        
+
         Args:
             command (str): La commande SQL à exécuter
             params (Optional[Dict]): Les paramètres pour la commande
@@ -78,7 +81,8 @@ class PostgresAdapter(DatabaseAdapter):
             with conn.cursor() as cursor:
                 cursor.execute(command, params or {})
                 return cursor.rowcount
-    
+
+
 # Méthode utilitaire pour Streamlit (connection pooling)
 @staticmethod
 @st.cache_resource

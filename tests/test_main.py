@@ -1,5 +1,5 @@
-
 from my_project.main import somme
+
 
 def test_somme():
     """Test the somme function."""
