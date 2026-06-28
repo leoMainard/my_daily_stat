@@ -141,7 +141,10 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine="add"):
     if btn_delete_routine:
         st.session_state["pending_delete_routine"] = routine_infos["id"]
 
-    if st.session_state.get("pending_delete_routine") == routine_infos["id"]:
+    if (
+        routine_infos
+        and st.session_state.get("pending_delete_routine") == routine_infos["id"]
+    ):
         # on affiche un message de confirmation avant de supprimer la routine
         st.warning("Êtes-vous sûr de vouloir supprimer cette routine ?", icon="⚠️")
         col1, col2 = st.columns([2, 1])
@@ -194,6 +197,12 @@ def display_routine(routines_infos: dict, date_value: datetime.date = None):
                 # Incrémenter ce compteur force la recréation des widgets (nouvelle clé = nouvelle instance)
                 widget_version = st.session_state.get(f"wv_{routine_id}", 0)
 
+                # Empêche le date_input de s'ouvrir automatiquement au focus
+                st.markdown(
+                    '<div style="height:0;overflow:hidden"><input autofocus /></div>',
+                    unsafe_allow_html=True,
+                )
+
                 routine_date_value: datetime.date = st.date_input(
                     label="Date de suivi pour votre routine",
                     value=date_value if date_value else "today",
@@ -209,7 +218,7 @@ def display_routine(routines_infos: dict, date_value: datetime.date = None):
                 wk = f"{routine_id}_{date_key}_v{widget_version}"
 
                 if routines_infos["type"] == RoutineType.TEXT.name:
-                    user_input = st.text_input(
+                    user_input = st.text_area(
                         label=f"text_{routines_infos['name']}",
                         placeholder="Ajoutez votre texte ici.",
                         label_visibility="collapsed",
@@ -301,6 +310,11 @@ def display_routine(routines_infos: dict, date_value: datetime.date = None):
                             date=routine_date_value,
                         )
                         st.success(body="Valeur sauvegardée !", icon="🔥")
+                        with st.spinner(
+                            "Ce module se fermera dans quelques instants ..."
+                        ):
+                            time.sleep(1)
+                            st.switch_page("pages/routine.py")
                     except Exception as e:
                         st.error(body=str(e), icon="🚨")
 

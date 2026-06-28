@@ -16,11 +16,10 @@ pip install -e .
 
 
 [En cours]
+- dashboard
 
 
 [A faire]
-- ajouter des filtres sur l'onglet Mes routines (date pour le moment)
-- dashboard
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
 - Ajouter la sélection d'icon sur dialogs stat
 - possibilité de modifier son profil
