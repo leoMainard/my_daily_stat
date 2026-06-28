@@ -5,6 +5,7 @@ import os
 
 load_dotenv()
 
+
 class Settings(BaseSettings):
     DB_HOST: str = os.getenv("DB_HOST")
     DB_PORT: int = 5432
@@ -25,15 +26,17 @@ class Settings(BaseSettings):
             f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}"
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
-    
+
     # class Config:
     #     env_file = ".env"
     #     env_file_encoding = 'utf-8'
     #     case_sensitive = True
     #     extra = "ignore"
 
+
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()

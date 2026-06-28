@@ -23,7 +23,7 @@ else:
         st.Page("pages/menu.py", title="Menu", icon=":material/home:"),
         st.Page("pages/routine.py", title="Mes routines", icon=":material/add_circle:"),
         st.Page("pages/dashboard.py", title="Dashboard", icon=":material/dashboard:"),
-        st.Page("pages/sign_out.py", title="Déconnexion", icon=":material/logout:")
+        st.Page("pages/sign_out.py", title="Déconnexion", icon=":material/logout:"),
     ]
 
 pg = st.navigation(pages, position="top")

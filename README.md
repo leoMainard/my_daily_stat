@@ -16,11 +16,9 @@ pip install -e .
 
 
 [En cours]
-- Pouvoir supprimer la valeur d'une routine
 
 
 [A faire]
-- colorisation des routines effectuées sur la page Mes routines
 - ajouter des filtres sur l'onglet Mes routines (date pour le moment)
 - dashboard
 - Ajouter une liste de tags à sélectionner sur les dialogs stat
