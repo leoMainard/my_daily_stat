@@ -16,7 +16,6 @@ pip install -e .
 
 
 [En cours]
-- colorisation des routines effectuées sur la page Mes routines
 
 
 [A faire]

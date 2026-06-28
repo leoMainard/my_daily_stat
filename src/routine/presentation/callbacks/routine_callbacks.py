@@ -173,7 +173,7 @@ def edition_routine(routine_infos: dict = None, type_dialog_routine="add"):
             del st.session_state["pending_delete_routine"]
 
 
-def display_routine(routines_infos: dict):
+def display_routine(routines_infos: dict, date_value: datetime.date = None):
     @st.dialog(routines_infos["name"], on_dismiss="rerun")
     def _dialog():
         @st.fragment
@@ -196,7 +196,7 @@ def display_routine(routines_infos: dict):
 
                 routine_date_value: datetime.date = st.date_input(
                     label="Date de suivi pour votre routine",
-                    value="today",
+                    value=date_value if date_value else "today",
                     format="DD/MM/YYYY",
                     key=f"date_{routine_id}",
                 )
