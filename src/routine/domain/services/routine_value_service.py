@@ -1,8 +1,14 @@
-from datetime import datetime
+from datetime import datetime, time
 from typing import Any, Optional
 
 from routine.db.repositories.routine_value_repository import RoutineValueRepository
 from routine.domain.models.routine_value import RoutineValue
+
+
+def _serialize_value(value: Any) -> Any:
+    if isinstance(value, time):
+        return value.strftime("%H:%M:%S")
+    return value
 
 
 class RoutineValueService:
@@ -19,19 +25,21 @@ class RoutineValueService:
         if not routine_id or not date:
             raise ValueError("Tous les champs sont obligatoires")
 
+        serialized = _serialize_value(value)
+
         try:
             routine_value_updated = self.repo.get_routine_value_by_routine_id_and_date(
                 routine_id, date
             )
             if routine_value_updated:
-                routine_value_updated.value = {"value": value}
+                routine_value_updated.value = {"value": serialized}
                 return self.repo.update(routine_value_updated)
         except Exception:
             raise Exception("Erreur lors de la mise à jour de votre routine")
 
         try:
             routine_value = RoutineValue(
-                routine_id=routine_id, value={"value": value}, date=date
+                routine_id=routine_id, value={"value": serialized}, date=date
             )
             return self.repo.create(routine_value)
         except Exception:

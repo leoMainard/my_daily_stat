@@ -256,11 +256,7 @@ def display_routine(routines_infos: dict, date_value: datetime.date = None):
                     time_value = None
                     if routine_value:
                         raw = routine_value.value["value"]
-                        time_value = (
-                            datetime.time.fromisoformat(raw)
-                            if isinstance(raw, str)
-                            else raw
-                        )
+                        time_value = datetime.time.fromisoformat(raw) if isinstance(raw, str) else raw
                     user_input = st.time_input(
                         label=f"time_{routines_infos['name']}",
                         label_visibility="collapsed",
